@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AR - Futbolito</title>
 
-    <!-- Librerías AR -->
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.js"></script>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image-aframe.prod.js"></script>
+    <!-- ✅ Librerías AR (versiones recomendadas) -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
     <style>
       html,
@@ -16,9 +15,9 @@
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
+        background: #000;
       }
 
-      /* Navbar igual a index */
       .navbar {
         background: #1e3a8a;
         color: white;
@@ -51,13 +50,13 @@
         transform: translate(-50%, -50%);
         color: white;
         z-index: 900;
-        background: rgba(0, 0, 0, 0.35);
+        background: rgba(0, 0, 0, 0.6);
         padding: 10px 14px;
         border-radius: 8px;
         font-weight: bold;
+        text-align: center;
       }
 
-      /* Escena AR */
       a-scene {
         position: fixed;
         top: 0;
@@ -81,12 +80,13 @@
     <!-- Escena AR -->
     <a-scene
       mindar-image="imageTargetSrc: ./targets.mind; autoStart: true"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights: true"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
       <!-- 🔹 Precargar el modelo 3D -->
       <a-assets timeout="20000">
-        <!-- Ajusta la ruta si tu archivo tiene otro nombre -->
         <a-asset-item id="japanModel" src="./models/torii.glb"></a-asset-item>
       </a-assets>
 
@@ -166,8 +166,26 @@
     </a-scene>
 
     <script>
-      document.querySelector("a-scene").addEventListener("loaded", function () {
-        document.getElementById("loading").style.display = "none";
+      const sceneEl = document.querySelector("a-scene");
+      const loadingEl = document.getElementById("loading");
+
+      // Cuando A-Frame terminó de montar la escena
+      sceneEl.addEventListener("loaded", () => {
+        console.log("A-Frame cargó la escena");
+      });
+
+      // Cuando MindAR está listo y la cámara debería estar funcionando
+      sceneEl.addEventListener("arReady", () => {
+        console.log("MindAR listo");
+        loadingEl.style.display = "none";
+      });
+
+      // Si MindAR falla (por cámara, permisos, etc.)
+      sceneEl.addEventListener("arError", (e) => {
+        console.error("MindAR error", e);
+        loadingEl.textContent =
+          "Error iniciando AR. Revisa permisos de cámara o prueba con otro navegador.";
+        loadingEl.style.background = "rgba(128,0,0,0.8)";
       });
     </script>
   </body>
