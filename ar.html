@@ -79,12 +79,13 @@
 
     <!-- Escena AR -->
     <a-scene
-      mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/examples/image-tracking/assets/card/card.mind; autoStart: true"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights: true"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-    >
+  mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: true"
+  color-space="sRGB"
+  renderer="colorManagement: true, physicallyCorrectLights: true"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
+>
+
       <!-- 🔹 Precargar el modelo 3D -->
       <a-assets timeout="20000">
         <a-asset-item id="japanModel" src="./models/torii.glb"></a-asset-item>
@@ -190,4 +191,5 @@
     </script>
   </body>
 </html>
+
 
