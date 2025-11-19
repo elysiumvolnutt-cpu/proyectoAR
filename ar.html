@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AR - Futbolito</title>
 
-    <!-- ✅ Librerías AR (versiones recomendadas) -->
+    <!-- Librerías AR -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
@@ -79,22 +79,22 @@
 
     <!-- Escena AR -->
     <a-scene
-  mindar-image="imageTargetSrc: ./targets.mind; autoStart: true"
-  color-space="sRGB"
-  renderer="colorManagement: true, physicallyCorrectLights: true"
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: false"
->
-
-      <!-- 🔹 Precargar el modelo 3D -->
+      mindar-image="imageTargetSrc: ./targets.mind; autoStart: true"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights: true"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      embedded
+    >
+      <!-- Precargar el modelo 3D -->
       <a-assets timeout="20000">
         <a-asset-item id="japanModel" src="./torii.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- JAPÓN VARIANTE 1 -->
-      <a-entity mindar-image-target="targetIndex: 0">
+      <!-- JAPÓN VARIANTE 1 (Image 53 → index 52) -->
+      <a-entity mindar-image-target="targetIndex: 52">
         <a-entity
           gltf-model="#japanModel"
           position="0 0 0"
@@ -111,8 +111,8 @@
         ></a-text>
       </a-entity>
 
-      <!-- JAPÓN VARIANTE 2 -->
-      <a-entity mindar-image-target="targetIndex: 1">
+      <!-- JAPÓN VARIANTE 2 (Image 54 → index 53) -->
+      <a-entity mindar-image-target="targetIndex: 53">
         <a-entity
           gltf-model="#japanModel"
           position="0 0 0"
@@ -129,8 +129,8 @@
         ></a-text>
       </a-entity>
 
-      <!-- JAPÓN VARIANTE 3 -->
-      <a-entity mindar-image-target="targetIndex: 2">
+      <!-- JAPÓN VARIANTE 3 (Image 55 → index 54) -->
+      <a-entity mindar-image-target="targetIndex: 54">
         <a-entity
           gltf-model="#japanModel"
           position="0 0 0"
@@ -147,8 +147,8 @@
         ></a-text>
       </a-entity>
 
-      <!-- JAPÓN VARIANTE 4 -->
-      <a-entity mindar-image-target="targetIndex: 3">
+      <!-- JAPÓN VARIANTE 4 (Image 56 → index 55) -->
+      <a-entity mindar-image-target="targetIndex: 55">
         <a-entity
           gltf-model="#japanModel"
           position="0 0 0"
@@ -170,28 +170,24 @@
       const sceneEl = document.querySelector("a-scene");
       const loadingEl = document.getElementById("loading");
 
-      // Cuando A-Frame terminó de montar la escena
       sceneEl.addEventListener("loaded", () => {
         console.log("A-Frame cargó la escena");
       });
 
-      // Cuando MindAR está listo y la cámara debería estar funcionando
       sceneEl.addEventListener("arReady", () => {
         console.log("MindAR listo");
         loadingEl.style.display = "none";
       });
 
-      // Si MindAR falla (por cámara, permisos, etc.)
       sceneEl.addEventListener("arError", (e) => {
         console.error("MindAR error", e);
-        loadingEl.textContent =
-          "Error iniciando AR. Revisa permisos de cámara o prueba con otro navegador.";
+        const msg =
+          e && e.detail && e.detail.message
+            ? e.detail.message
+            : "Error desconocido al iniciar AR";
+        loadingEl.textContent = "Error AR: " + msg;
         loadingEl.style.background = "rgba(128,0,0,0.8)";
       });
     </script>
   </body>
-  </html>
 </html>
-
-
-
