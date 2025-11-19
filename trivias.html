@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trivia Mundial 2026</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3a8a, #10b981);
+        color: white;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .trivia-container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .puntaje {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin: 15px 0;
+        color: #fbbf24;
+      }
+
+      .progreso {
+        text-align: center;
+        margin: 15px 0;
+        font-size: 16px;
+      }
+
+      .pregunta {
+        font-size: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: bold;
+        line-height: 1.4;
+      }
+
+      .opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .opcion {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .opcion:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: #fbbf24;
+      }
+
+      .opcion.correcta {
+        background: #10b981;
+        border-color: #059669;
+      }
+
+      .opcion.incorrecta {
+        background: #ef4444;
+        border-color: #dc2626;
+      }
+
+      .botones {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .btn {
+        background: #fbbf24;
+        color: black;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .btn:hover {
+        background: #f59e0b;
+      }
+
+      .btn-volver {
+        background: #6b7280;
+        color: white;
+      }
+
+      .btn-volver:hover {
+        background: #4b5563;
+      }
+
+      .resultado {
+        text-align: center;
+        font-size: 24px;
+        margin: 20px 0;
+        display: none;
+      }
+
+      .explicacion {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        margin: 15px 0;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="trivia-container">
+      <div class="header">
+        <h1>⚽ Trivia Mundial 2026 ⚽</h1>
+        <p>Responde 5 preguntas sobre los equipos clasificados</p>
+      </div>
+
+      <div class="puntaje" id="puntaje">Puntos: 0/5</div>
+      <div class="progreso" id="progreso">Pregunta 1/5</div>
+
+      <div class="pregunta" id="pregunta-texto"></div>
+
+      <div class="opciones" id="opciones-container">
+        <!-- Las opciones se generan dinámicamente -->
+      </div>
+
+      <div class="explicacion" id="explicacion"></div>
+
+      <div class="resultado" id="resultado-final"></div>
+
+      <div class="botones">
+        <button class="btn" id="btn-siguiente" style="display: none">
+          Siguiente Pregunta
+        </button>
+        <button class="btn btn-volver" onclick="window.close()">
+          Volver al Menú
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Base de datos de preguntas sobre los 18 equipos
+      const preguntas = [
+        {
+          pregunta: "¿Qué país es el actual campeón del mundo?",
+          opciones: ["Brasil", "Argentina", "Francia", "Alemania"],
+          correcta: 1, // Argentina
+          explicacion: "Argentina ganó la Copa del Mundo 2022 en Qatar.",
+        },
+        {
+          pregunta:
+            "¿Qué país organizará el Mundial 2026 junto con EE.UU. y México?",
+          opciones: ["Canadá", "Brasil", "España", "Japón"],
+          correcta: 0, // Canadá
+          explicacion:
+            "Canadá es uno de los tres países organizadores del Mundial 2026.",
+        },
+        {
+          pregunta: "¿Qué selección tiene más Copas del Mundo?",
+          opciones: ["Alemania", "Italia", "Brasil", "Argentina"],
+          correcta: 2, // Brasil
+          explicacion:
+            "Brasil tiene 5 Copas del Mundo (1958, 1962, 1970, 1994, 2002).",
+        },
+        {
+          pregunta:
+            "¿Qué equipo europeo tiene una generación dorada con De Bruyne y Lukaku?",
+          opciones: ["Bélgica", "Países Bajos", "Portugal", "Francia"],
+          correcta: 0, // Bélgica
+          explicacion:
+            "Bélgica ha tenido una generación dorada con jugadores como Kevin De Bruyne y Romelu Lukaku.",
+        },
+        {
+          pregunta:
+            "¿Qué selección asiática tiene como estrella a Son Heung-min?",
+          opciones: ["Japón", "Corea del Sur", "Irán", "Arabia Saudita"],
+          correcta: 1, // Corea del Sur
+          explicacion:
+            "Son Heung-min es el capitán y estrella de la selección de Corea del Sur.",
+        },
+        {
+          pregunta: "¿Qué país ganó su primer Mundial como anfitrión en 1998?",
+          opciones: ["Francia", "España", "Inglaterra", "Italia"],
+          correcta: 0, // Francia
+          explicacion:
+            "Francia ganó su primer Mundial en 1998 cuando fue país anfitrión.",
+        },
+        {
+          pregunta: "¿Qué selección es conocida como 'La Canarinha'?",
+          opciones: ["Argentina", "Brasil", "Portugal", "Países Bajos"],
+          correcta: 1, // Brasil
+          explicacion:
+            "Brasil es conocida como 'La Canarinha' por el color amarillo de su uniforme.",
+        },
+        {
+          pregunta: "¿Qué equipo tiene a Mbappé como su principal figura?",
+          opciones: ["Bélgica", "Portugal", "Francia", "Inglaterra"],
+          correcta: 2, // Francia
+          explicacion: "Kylian Mbappé es la estrella de la selección francesa.",
+        },
+        {
+          pregunta: "¿Qué país clasificó por primera vez a un Mundial en 2022?",
+          opciones: ["Canadá", "Costa de Marfil", "Nueva Zelanda", "Japón"],
+          correcta: 0, // Canadá
+          explicacion:
+            "Canadá clasificó por primera vez desde 1986 en el Mundial 2022.",
+        },
+        {
+          pregunta: "¿Qué selección es conocida como 'Los Samuráis Azules'?",
+          opciones: ["Corea del Sur", "China", "Japón", "Irán"],
+          correcta: 2, // Japón
+          explicacion: "Japón es conocida como 'Los Samuráis Azules'.",
+        },
+        {
+          pregunta: "¿Qué país ganó la Copa Africana de Naciones 2023?",
+          opciones: ["Costa de Marfil", "Senegal", "Egipto", "Marruecos"],
+          correcta: 0, // Costa de Marfil
+          explicacion:
+            "Costa de Marfil ganó la Copa Africana de Naciones 2023 como anfitrión.",
+        },
+        {
+          pregunta:
+            "¿Qué selección tiene a Cristiano Ronaldo como su máximo goleador histórico?",
+          opciones: ["España", "Portugal", "Brasil", "Argentina"],
+          correcta: 1, // Portugal
+          explicacion:
+            "Cristiano Ronaldo es el máximo goleador histórico de Portugal.",
+        },
+        {
+          pregunta: "¿Qué equipo es conocido como 'La Albiceleste'?",
+          opciones: ["Uruguay", "Argentina", "Chile", "Paraguay"],
+          correcta: 1, // Argentina
+          explicacion:
+            "Argentina es conocida como 'La Albiceleste' por los colores de su bandera.",
+        },
+        {
+          pregunta:
+            "¿Qué país tiene 4 estrellas en su escudo por sus 4 Mundiales ganados?",
+          opciones: ["Alemania", "Italia", "Argentina", "Uruguay"],
+          correcta: 1, // Italia
+          explicacion:
+            "Italia tiene 4 Copas del Mundo (1934, 1938, 1982, 2006).",
+        },
+        {
+          pregunta: "¿Qué selección es conocida como 'El Tri'?",
+          opciones: ["México", "Brasil", "Chile", "Colombia"],
+          correcta: 0, // México
+          explicacion:
+            "México es conocido como 'El Tri' por los tres colores de su bandera.",
+        },
+        {
+          pregunta: "¿Qué país es el actual campeón de la Eurocopa?",
+          opciones: ["Italia", "España", "Inglaterra", "Francia"],
+          correcta: 0, // Italia
+          explicacion: "Italia ganó la Eurocopa 2020 (disputada en 2021).",
+        },
+        {
+          pregunta:
+            "¿Qué equipo oceánico se ha clasificado para el Mundial 2026?",
+          opciones: [
+            "Australia",
+            "Nueva Zelanda",
+            "Fiyi",
+            "Papúa Nueva Guinea",
+          ],
+          correcta: 1, // Nueva Zelanda
+          explicacion:
+            "Nueva Zelanda es el representante de Oceanía para el Mundial 2026.",
+        },
+        {
+          pregunta: "¿Qué selección es conocida como 'La Naranja Mecánica'?",
+          opciones: ["España", "Países Bajos", "Portugal", "Bélgica"],
+          correcta: 1, // Países Bajos
+          explicacion:
+            "Países Bajos es conocida como 'La Naranja Mecánica' por su color naranja y estilo de juego.",
+        },
+      ];
+
+      // Variables del juego
+      let preguntaActual = 0;
+      let puntuacion = 0;
+      let preguntasSeleccionadas = [];
+
+      // Elementos DOM
+      const elementoPregunta = document.getElementById("pregunta-texto");
+      const opcionesContainer = document.getElementById("opciones-container");
+      const elementoPuntaje = document.getElementById("puntaje");
+      const elementoProgreso = document.getElementById("progreso");
+      const btnSiguiente = document.getElementById("btn-siguiente");
+      const explicacionDiv = document.getElementById("explicacion");
+      const resultadoFinal = document.getElementById("resultado-final");
+
+      // Inicializar el juego
+      function iniciarJuego() {
+        // Seleccionar 5 preguntas aleatorias
+        preguntasSeleccionadas = [...preguntas]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 5);
+
+        preguntaActual = 0;
+        puntuacion = 0;
+        mostrarPregunta();
+      }
+
+      // Mostrar pregunta actual
+      function mostrarPregunta() {
+        const pregunta = preguntasSeleccionadas[preguntaActual];
+
+        elementoPregunta.textContent = pregunta.pregunta;
+        elementoProgreso.textContent = `Pregunta ${preguntaActual + 1}/5`;
+        elementoPuntaje.textContent = `Puntos: ${puntuacion}/5`;
+
+        // Limpiar opciones anteriores
+        opcionesContainer.innerHTML = "";
+        explicacionDiv.style.display = "none";
+        btnSiguiente.style.display = "none";
+
+        // Crear nuevas opciones
+        pregunta.opciones.forEach((opcion, index) => {
+          const opcionElement = document.createElement("div");
+          opcionElement.className = "opcion";
+          opcionElement.textContent = opcion;
+          opcionElement.onclick = () => seleccionarOpcion(index);
+          opcionesContainer.appendChild(opcionElement);
+        });
+      }
+
+      // Manejar selección de opción
+      function seleccionarOpcion(indiceSeleccionado) {
+        const pregunta = preguntasSeleccionadas[preguntaActual];
+        const opciones = document.querySelectorAll(".opcion");
+
+        // Deshabilitar todas las opciones
+        opciones.forEach((opcion) => {
+          opcion.style.pointerEvents = "none";
+        });
+
+        // Mostrar resultado
+        if (indiceSeleccionado === pregunta.correcta) {
+          opciones[indiceSeleccionado].classList.add("correcta");
+          puntuacion++;
+          elementoPuntaje.textContent = `Puntos: ${puntuacion}/5`;
+        } else {
+          opciones[indiceSeleccionado].classList.add("incorrecta");
+          opciones[pregunta.correcta].classList.add("correcta");
+        }
+
+        // Mostrar explicación
+        explicacionDiv.textContent = pregunta.explicacion;
+        explicacionDiv.style.display = "block";
+
+        // Mostrar botón siguiente
+        btnSiguiente.style.display = "block";
+      }
+
+      // Siguiente pregunta
+      function siguientePregunta() {
+        preguntaActual++;
+
+        if (preguntaActual < preguntasSeleccionadas.length) {
+          mostrarPregunta();
+        } else {
+          mostrarResultadoFinal();
+        }
+      }
+
+      // Mostrar resultado final
+      function mostrarResultadoFinal() {
+        elementoPregunta.style.display = "none";
+        opcionesContainer.style.display = "none";
+        explicacionDiv.style.display = "none";
+        btnSiguiente.style.display = "none";
+        elementoProgreso.style.display = "none";
+
+        let mensaje = "";
+        if (puntuacion === 5) {
+          mensaje = "🏆 ¡Perfecto! Eres un experto del fútbol 🏆";
+        } else if (puntuacion >= 3) {
+          mensaje = "⭐ ¡Buen trabajo! Conoces bastante de fútbol ⭐";
+        } else {
+          mensaje = "📚 ¡Sigue aprendiendo! La práctica hace al maestro 📚";
+        }
+
+        resultadoFinal.innerHTML = `
+                <h2>¡Trivia Completada!</h2>
+                <p>Obtuviste ${puntuacion} de 5 puntos</p>
+                <p>${mensaje}</p>
+                <button class="btn" onclick="reiniciarJuego()" style="margin-top: 20px;">Jugar Otra Vez</button>
+            `;
+        resultadoFinal.style.display = "block";
+      }
+
+      // Reiniciar juego
+      function reiniciarJuego() {
+        resultadoFinal.style.display = "none";
+        elementoPregunta.style.display = "block";
+        opcionesContainer.style.display = "flex";
+        elementoProgreso.style.display = "block";
+        iniciarJuego();
+      }
+
+      // Event listeners
+      btnSiguiente.addEventListener("click", siguientePregunta);
+
+      // Iniciar el juego cuando se carga la página
+      window.onload = iniciarJuego;
+    </script>
+  </body>
+</html>

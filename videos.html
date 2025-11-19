@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Videos - Futbolito</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3a8a, #10b981);
+        color: white;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: rgba(30, 58, 138, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .video-item {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .video-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #fbbf24;
+      }
+
+      video {
+        width: 100%;
+        border-radius: 10px;
+        border: 2px solid #fbbf24;
+        margin-bottom: 10px;
+        transition: filter 0.3s ease;
+      }
+
+      select {
+        background: #fbbf24;
+        color: black;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 10px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .btn-volver {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: #fbbf24;
+        color: black;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        margin-top: 20px;
+        font-weight: bold;
+      }
+
+      .btn-volver:hover {
+        background: #f59e0b;
+      }
+
+      /* Filtros disponibles */
+      .grayscale {
+        filter: grayscale(100%);
+      }
+
+      .vintage {
+        filter: sepia(60%) contrast(120%) brightness(90%) saturate(120%);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📹 Videos del Mundial 2026</h1>
+        <p>Contenido exclusivo de los equipos clasificados</p>
+      </div>
+
+      <!-- Video Argentina -->
+      <div class="video-item">
+        <div class="video-title">⚽ Mejores Jugadas - Argentina</div>
+        <video id="video-argentina" controls>
+          <source src="./videos/argentina.mp4" type="video/mp4" />
+          Tu navegador no soporta el video.
+        </video>
+        <select onchange="aplicarFiltro('video-argentina', this.value)">
+          <option value="none">Sin filtro</option>
+          <option value="grayscale">Blanco y negro</option>
+          <option value="vintage">Vintage</option>
+        </select>
+      </div>
+
+      <!-- Video Brasil -->
+      <div class="video-item">
+        <div class="video-title">🌟 Promesas Jóvenes - Brasil</div>
+        <video id="video-brasil" controls>
+          <source src="./videos/brasil.mp4" type="video/mp4" />
+        </video>
+        <select onchange="aplicarFiltro('video-brasil', this.value)">
+          <option value="none">Sin filtro</option>
+          <option value="grayscale">Blanco y negro</option>
+          <option value="vintage">Vintage</option>
+        </select>
+      </div>
+
+      <!-- Video Francia -->
+      <div class="video-item">
+        <div class="video-title">🎯 Goles Épicos - Francia</div>
+        <video id="video-francia" controls>
+          <source src="./videos/francia.mp4" type="video/mp4" />
+        </video>
+        <select onchange="aplicarFiltro('video-francia', this.value)">
+          <option value="none">Sin filtro</option>
+          <option value="grayscale">Blanco y negro</option>
+          <option value="vintage">Vintage</option>
+        </select>
+      </div>
+
+      <!-- Video Alemania -->
+      <div class="video-item">
+        <div class="video-title">🏆 Historia - Alemania</div>
+        <video id="video-alemania" controls>
+          <source src="./videos/alemania.mp4" type="video/mp4" />
+        </video>
+        <select onchange="aplicarFiltro('video-alemania', this.value)">
+          <option value="none">Sin filtro</option>
+          <option value="grayscale">Blanco y negro</option>
+          <option value="vintage">Vintage</option>
+        </select>
+      </div>
+
+      <!-- Resumen -->
+      <div class="video-item">
+        <div class="video-title">🌍 Equipos Clasificados - Resumen</div>
+        <video id="video-resumen" controls>
+          <source src="./videos/resumen.mp4" type="video/mp4" />
+        </video>
+        <select onchange="aplicarFiltro('video-resumen', this.value)">
+          <option value="none">Sin filtro</option>
+          <option value="grayscale">Blanco y negro</option>
+          <option value="vintage">Vintage</option>
+        </select>
+      </div>
+
+      <button class="btn-volver" onclick="window.history.back()">
+        ← Volver al Menú Principal
+      </button>
+    </div>
+
+    <script>
+      function aplicarFiltro(id, filtro) {
+        const video = document.getElementById(id);
+        video.className = ""; // limpia filtros previos
+        if (filtro !== "none") {
+          video.classList.add(filtro);
+        }
+      }
+    </script>
+  </body>
+</html>

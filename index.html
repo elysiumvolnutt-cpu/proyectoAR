@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Futbolito</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3a8a, #10b981);
+        height: 100%;
+        color: white;
+        text-align: center;
+      }
+
+      .navbar {
+        background: #1e3a8a;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .navbar button {
+        background: #fbbf24;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .main-content {
+        padding: 40px 20px;
+      }
+
+      .btn {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        font-size: 16px;
+        margin: 10px;
+        cursor: pointer;
+        width: 200px;
+      }
+
+      .btn:hover {
+        background: #059669;
+      }
+
+      .warning {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px auto;
+        max-width: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>Futbolito</h1>
+      <button onclick="window.open('ayuda.html', '_blank')">Ayuda</button>
+    </div>
+
+    <div class="main-content">
+      <h2>⚽ Bienvenido a Futbolito ⚽</h2>
+      <p>Experiencia de Realidad Aumentada del Mundial 2026</p>
+
+      <div class="warning">
+        <strong>Nota:</strong> La función AR funciona mejor en dispositivos
+        móviles con Chrome/Safari
+      </div>
+
+      <button class="btn" onclick="abrirTrivia()">🎯 Jugar Trivia</button>
+      <button class="btn" onclick="iniciarAR()">📱 Activar AR</button>
+      <button class="btn" onclick="abrirVideos()">📹 Ver Videos</button>
+      <button class="btn" onclick="abrirEstadisticas()">📊 Estadísticas</button>
+    </div>
+
+    <script>
+      function iniciarAR() {
+        // En CodeSandbox, redirigir a la versión AR
+        window.open("ar.html", "_blank");
+      }
+
+      function abrirTrivia() {
+        window.open("trivias.html", "_blank");
+      }
+
+      function abrirVideos() {
+        window.open("videos.html", "_blank");
+      }
+
+      function abrirEstadisticas() {
+        window.open("estadisticas.html", "_blank");
+      }
+    </script>
+  </body>
+</html>

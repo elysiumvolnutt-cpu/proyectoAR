@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estadísticas - Futbolito</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3a8a, #10b981);
+        color: #fff;
+        min-height: 100vh;
+      }
+
+      .navbar {
+        background: #1e3a8a;
+        color: #fff;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .navbar h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      .navbar .right {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .btn {
+        background: #fbbf24;
+        color: #111;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn.secondary {
+        background: #10b981;
+        color: #fff;
+      }
+
+      .container {
+        padding: 20px;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .controls input,
+      .controls select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+      }
+
+      .warning {
+        background: rgba(255, 255, 255, 0.12);
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      .table-wrap {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        overflow: auto;
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 640px;
+      }
+      thead th {
+        position: sticky;
+        top: 0;
+        background: rgba(30, 58, 138, 0.95);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 12px 10px;
+        text-align: left;
+      }
+      tbody td {
+        padding: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 14px;
+      }
+      tbody tr:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #111;
+        background: #fbbf24;
+      }
+      .conf {
+        font-size: 12px;
+        opacity: 0.9;
+        display: inline-block;
+        margin-left: 8px;
+      }
+
+      .footer-actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>Estadísticas — Futbolito</h1>
+      <div class="right">
+        <button class="btn" onclick="window.open('ayuda.html','_blank')">
+          Ayuda
+        </button>
+        <button
+          class="btn secondary"
+          onclick="window.location.href='index.html'"
+        >
+          Inicio
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="warning">
+        <strong>Nota:</strong> Estadísticas históricas reales en Copas del Mundo
+        (torneos finales hasta Qatar 2022). No son resultados del Mundial 2026.
+      </div>
+
+      <div class="controls">
+        <input
+          id="search"
+          type="text"
+          placeholder="Buscar equipo (p. ej. México, Francia)..."
+          oninput="render()"
+        />
+        <select id="sort" onchange="render()">
+          <option value="pts">Ordenar por: Puntos (desc)</option>
+          <option value="dg">Ordenar por: Diferencia de gol (desc)</option>
+          <option value="gf">Ordenar por: Goles a favor (desc)</option>
+          <option value="pj">Ordenar por: Partidos jugados (desc)</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Equipo</th>
+              <th>PJ</th>
+              <th>G</th>
+              <th>E</th>
+              <th>P</th>
+              <th>GF</th>
+              <th>GC</th>
+              <th>DG</th>
+              <th>Pts</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- filas dinámicas -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer-actions">
+        <button
+          class="btn"
+          onclick="window.scrollTo({top:0, behavior:'smooth'})"
+        >
+          ⬆ Ir arriba
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Estadísticas reales de Mundiales (torneos finales, hasta Qatar 2022).
+      // Fuente: registros históricos de FIFA / Wikipedia.
+      const equipos = [
+        {
+          nombre: "Brasil",
+          conf: "CONMEBOL",
+          pj: 114,
+          g: 76,
+          e: 19,
+          p: 19,
+          gf: 237,
+          gc: 108,
+          dg: 237 - 108,
+          pts: 3 * 76 + 19,
+        },
+        {
+          nombre: "Alemania",
+          conf: "UEFA",
+          pj: 112,
+          g: 68,
+          e: 21,
+          p: 23,
+          gf: 232,
+          gc: 130,
+          dg: 232 - 130,
+          pts: 3 * 68 + 21,
+        },
+        {
+          nombre: "Argentina",
+          conf: "CONMEBOL",
+          pj: 88,
+          g: 47,
+          e: 17,
+          p: 24,
+          gf: 152,
+          gc: 101,
+          dg: 152 - 101,
+          pts: 3 * 47 + 17,
+        },
+        {
+          nombre: "Italia",
+          conf: "UEFA",
+          pj: 83,
+          g: 45,
+          e: 21,
+          p: 17,
+          gf: 128,
+          gc: 77,
+          dg: 128 - 77,
+          pts: 3 * 45 + 21,
+        },
+        {
+          nombre: "Francia",
+          conf: "UEFA",
+          pj: 73,
+          g: 39,
+          e: 14,
+          p: 20,
+          gf: 136,
+          gc: 85,
+          dg: 136 - 85,
+          pts: 3 * 39 + 14,
+        },
+        {
+          nombre: "Inglaterra",
+          conf: "UEFA",
+          pj: 74,
+          g: 32,
+          e: 22,
+          p: 20,
+          gf: 104,
+          gc: 68,
+          dg: 104 - 68,
+          pts: 3 * 32 + 22,
+        },
+        {
+          nombre: "España",
+          conf: "UEFA",
+          pj: 67,
+          g: 31,
+          e: 17,
+          p: 19,
+          gf: 108,
+          gc: 75,
+          dg: 108 - 75,
+          pts: 3 * 31 + 17,
+        },
+        {
+          nombre: "Uruguay",
+          conf: "CONMEBOL",
+          pj: 59,
+          g: 25,
+          e: 13,
+          p: 21,
+          gf: 89,
+          gc: 76,
+          dg: 89 - 76,
+          pts: 3 * 25 + 13,
+        },
+        {
+          nombre: "Portugal",
+          conf: "UEFA",
+          pj: 35,
+          g: 17,
+          e: 6,
+          p: 12,
+          gf: 61,
+          gc: 41,
+          dg: 61 - 41,
+          pts: 3 * 17 + 6,
+        },
+        {
+          nombre: "México",
+          conf: "CONCACAF",
+          pj: 60,
+          g: 17,
+          e: 15,
+          p: 28,
+          gf: 62,
+          gc: 101,
+          dg: 62 - 101,
+          pts: 3 * 17 + 15,
+        },
+        {
+          nombre: "Estados Unidos",
+          conf: "CONCACAF",
+          pj: 37,
+          g: 9,
+          e: 8,
+          p: 20,
+          gf: 40,
+          gc: 66,
+          dg: 40 - 66,
+          pts: 3 * 9 + 8,
+        },
+        {
+          nombre: "Canadá",
+          conf: "CONCACAF",
+          pj: 6,
+          g: 0,
+          e: 0,
+          p: 6,
+          gf: 2,
+          gc: 12,
+          dg: 2 - 12,
+          pts: 0,
+        },
+        {
+          nombre: "Colombia",
+          conf: "CONMEBOL",
+          pj: 22,
+          g: 9,
+          e: 3,
+          p: 10,
+          gf: 32,
+          gc: 30,
+          dg: 32 - 30,
+          pts: 3 * 9 + 3,
+        },
+        {
+          nombre: "Ecuador",
+          conf: "CONMEBOL",
+          pj: 13,
+          g: 5,
+          e: 2,
+          p: 6,
+          gf: 14,
+          gc: 14,
+          dg: 14 - 14,
+          pts: 3 * 5 + 2,
+        },
+        {
+          nombre: "Japón",
+          conf: "AFC",
+          pj: 25,
+          g: 7,
+          e: 6,
+          p: 12,
+          gf: 25,
+          gc: 33,
+          dg: 25 - 33,
+          pts: 3 * 7 + 6,
+        },
+        {
+          nombre: "Corea del Sur",
+          conf: "AFC",
+          pj: 38,
+          g: 7,
+          e: 10,
+          p: 21,
+          gf: 39,
+          gc: 78,
+          dg: 39 - 78,
+          pts: 3 * 7 + 10,
+        },
+        {
+          nombre: "Marruecos",
+          conf: "CAF",
+          pj: 23,
+          g: 5,
+          e: 7,
+          p: 11,
+          gf: 20,
+          gc: 27,
+          dg: 20 - 27,
+          pts: 3 * 5 + 7,
+        },
+        {
+          nombre: "Uzbekistán",
+          conf: "AFC",
+          pj: 0,
+          g: 0,
+          e: 0,
+          p: 0,
+          gf: 0,
+          gc: 0,
+          dg: 0,
+          pts: 0,
+        },
+      ];
+
+      function render() {
+        const q = document.getElementById("search").value.toLowerCase().trim();
+        const sort = document.getElementById("sort").value;
+
+        let data = equipos.filter(
+          (e) =>
+            e.nombre.toLowerCase().includes(q) ||
+            e.conf.toLowerCase().includes(q)
+        );
+
+        const by =
+          {
+            pts: (a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf,
+            dg: (a, b) => b.dg - a.dg || b.pts - a.pts || b.gf - a.gf,
+            gf: (a, b) => b.gf - a.gf || b.pts - a.pts || b.dg - a.dg,
+            pj: (a, b) => b.pj - a.pj || b.pts - a.pts,
+          }[sort] || ((a, b) => b.pts - a.pts);
+
+        data.sort(by);
+
+        const tbody = document.getElementById("tbody");
+        tbody.innerHTML = "";
+        data.forEach((e, i) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td>
+              <span class="badge">${e.nombre}</span>
+              <span class="conf">${e.conf}</span>
+            </td>
+            <td>${e.pj}</td>
+            <td>${e.g}</td>
+            <td>${e.e}</td>
+            <td>${e.p}</td>
+            <td>${e.gf}</td>
+            <td>${e.gc}</td>
+            <td>${e.dg}</td>
+            <td><strong>${e.pts}</strong></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Inicializa tabla
+      render();
+    </script>
+  </body>
+</html>
