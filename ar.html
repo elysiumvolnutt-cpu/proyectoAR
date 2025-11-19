@@ -86,75 +86,31 @@
       device-orientation-permission-ui="enabled: false"
       embedded
     >
-      <!-- Precargar el modelo 3D -->
+
+      <!-- 🔴 COMENTADO: Precarga del modelo GLB (no lo usando en esta prueba)
       <a-assets timeout="20000">
         <a-asset-item id="japanModel" src="./torii.glb"></a-asset-item>
       </a-assets>
+      -->
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- JAPÓN VARIANTE 1 (Image 53 → index 52) -->
+      <!-- 🔴 COMENTADO: Todas las variantes con modelos GLB
+      <a-entity mindar-image-target="targetIndex: 52">...</a-entity>
+      <a-entity mindar-image-target="targetIndex: 53">...</a-entity>
+      <a-entity mindar-image-target="targetIndex: 54">...</a-entity>
+      <a-entity mindar-image-target="targetIndex: 55">...</a-entity>
+      -->
+
+      <!-- 🟢 PRUEBA: CUBO ROJO EN TARGET 52 (Image 53) -->
       <a-entity mindar-image-target="targetIndex: 52">
-        <a-entity
-          gltf-model="#japanModel"
+        <a-box
           position="0 0 0"
-          scale="0.2 0.2 0.2"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-        ></a-entity>
-
-        <a-text
-          value="Japón — Hinomaru"
-          position="0 -0.6 0"
-          align="center"
-          color="white"
-          width="1.8"
-        ></a-text>
-      </a-entity>
-
-      <!-- JAPÓN VARIANTE 2 (Image 54 → index 53) -->
-      <a-entity mindar-image-target="targetIndex: 53">
-        <a-entity
-          gltf-model="#japanModel"
-          position="0 0 0"
-          scale="0.2 0.2 0.2"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-        ></a-entity>
-
-        <a-text
-          value="Japón — Hinomaru"
-          position="0 -0.6 0"
-          align="center"
-          color="white"
-          width="1.8"
-        ></a-text>
-      </a-entity>
-
-      <!-- JAPÓN VARIANTE 3 (Image 55 → index 54) -->
-      <a-entity mindar-image-target="targetIndex: 54">
-        <a-entity
-          gltf-model="#japanModel"
-          position="0 0 0"
-          scale="0.2 0.2 0.2"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-        ></a-entity>
-
-        <a-text
-          value="Japón — Hinomaru"
-          position="0 -0.6 0"
-          align="center"
-          color="white"
-          width="1.8"
-        ></a-text>
-      </a-entity>
-
-      <!-- JAPÓN VARIANTE 4 (Image 56 → index 55) -->
-      <a-entity mindar-image-target="targetIndex: 55">
-        <a-entity
-          gltf-model="#japanModel"
-          position="0 0 0"
-          scale="0.2 0.2 0.2"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-        ></a-entity>
+          depth="0.1"
+          height="0.5"
+          width="0.5"
+          color="red"
+        ></a-box>
 
         <a-text
           value="Japón — Hinomaru"
