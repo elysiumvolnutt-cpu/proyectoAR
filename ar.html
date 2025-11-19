@@ -88,7 +88,7 @@
     <div id="start-ar">Toca aquí para iniciar AR</div>
     <div id="loading">Iniciando AR... acepta el permiso de cámara</div>
 
-    <!-- Usamos el .mind de ejemplo oficial -->
+      <!-- Usamos el .mind de ejemplo oficial -->
     <a-scene
       mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: false"
       color-space="sRGB"
@@ -99,20 +99,31 @@
     >
       <!-- Aquí precargamos TU modelo -->
       <a-assets timeout="20000">
-        <a-asset-item id="japanModel" src="./models/torii.glb"></a-asset-item>
+        <a-asset-item id="japanModel" src="./torii.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target 0: mostramos tu torii -->
+      <!-- Target 0: mostramos torii + cubo + texto -->
       <a-entity mindar-image-target="targetIndex: 0">
+        <!-- Modelo torii -->
         <a-entity
           gltf-model="#japanModel"
-          position="0 0 0"
-          scale="0.2 0.2 0.2"
+          position="0 0.1 0"
+          scale="0.1 0.1 0.1"
           animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
         ></a-entity>
 
+        <!-- Cubo de prueba, arriba del modelo -->
+        <a-box
+          position="0 0.4 0"
+          depth="0.1"
+          height="0.1"
+          width="0.1"
+          color="#4ade80"
+        ></a-box>
+
+        <!-- Texto -->
         <a-text
           value="Japón — Hinomaru"
           position="0 -0.6 0"
@@ -121,7 +132,7 @@
           width="1.8"
         ></a-text>
       </a-entity>
-    </a-scene>
+    </a-scene> <!-- 👈 ESTE CIERRE ES EL QUE FALTABA -->
 
     <script>
       const sceneEl = document.querySelector("a-scene");
@@ -162,4 +173,3 @@
     </script>
   </body>
 </html>
-
