@@ -19,6 +19,7 @@
         overflow: hidden;
       }
 
+      /* NAVBAR */
       .navbar {
         background: #1e3a8a;
         color: white;
@@ -44,96 +45,118 @@
         cursor: pointer;
       }
 
+      /* CONTENEDOR AR */
+      #ar-container {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        background: #000;
+      }
+
+      #ar-container a-scene {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* MENSAJES */
       #loading,
       #start-ar {
         position: fixed;
         left: 50%;
         transform: translateX(-50%);
         z-index: 900;
-        background: rgba(0, 0, 0, 0.7);
-        color: #fff;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-weight: bold;
         text-align: center;
       }
 
       #loading {
         top: 55%;
         display: none;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: bold;
       }
 
+      /* 🔥 BOTÓN FÍSICO DE INICIO AR 🔥 */
       #start-ar {
         top: 55%;
         display: block;
+        background: #fbbf24;
+        color: #000;
+        padding: 14px 22px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        border: 2px solid #fff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
-
-      a-scene {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: 1;
+      #start-ar:active {
+        transform: translateX(-50%) scale(0.95);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       }
     </style>
   </head>
 
   <body>
+    <!-- NAVBAR -->
     <div class="navbar">
       <h1>Futbolito</h1>
       <button onclick="window.open('ayuda.html', '_blank')">Ayuda</button>
     </div>
 
+    <!-- MENSAJES -->
     <div id="start-ar">Toca aquí para iniciar AR</div>
     <div id="loading">Iniciando AR... acepta el permiso de cámara</div>
 
-      <!-- Usamos el .mind de ejemplo oficial -->
-    <a-scene
-      mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: false"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights: true"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-     embedded
-    >
-       <!-- embedded -->
-      <!-- Aquí precargamos TU modelo -->
-      <a-assets timeout="20000">
-        <a-asset-item id="japanModel" src="./torii.glb"></a-asset-item>
-      </a-assets>
+    <!-- CONTENEDOR AR -->
+    <div id="ar-container">
+      <a-scene
+        mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: false"
+        color-space="sRGB"
+        renderer="colorManagement: true, physicallyCorrectLights: true"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+        embedded
+      >
+        <!-- Precargar modelo -->
+        <a-assets timeout="20000">
+          <a-asset-item id="japanModel" src="./torii.glb"></a-asset-item>
+        </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target 0: mostramos torii + cubo + texto -->
-      <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Modelo torii -->
-        <a-entity
-          gltf-model="#japanModel"
-          position="0 0.1 0"
-          scale="0.1 0.1 0.1"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-        ></a-entity>
+        <!-- Target 0 -->
+        <a-entity mindar-image-target="targetIndex: 0">
+          <a-entity
+            gltf-model="#japanModel"
+            position="0 0.1 0"
+            scale="0.1 0.1 0.1"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
+          ></a-entity>
 
-        <!-- Cubo de prueba, arriba del modelo -->
-        <a-box
-          position="0 0.4 0"
-          depth="0.1"
-          height="0.1"
-          width="0.1"
-          color="#4ade80"
-        ></a-box>
+          <a-box
+            position="0 0.4 0"
+            depth="0.1"
+            height="0.1"
+            width="0.1"
+            color="#4ade80"
+          ></a-box>
 
-        <!-- Texto -->
-        <a-text
-          value="Japón — Hinomaru"
-          position="0 -0.6 0"
-          align="center"
-          color="white"
-          width="1.8"
-        ></a-text>
-      </a-entity>
-    </a-scene> <!-- 👈 ESTE CIERRE ES EL QUE FALTABA -->
+          <a-text
+            value="Japón — Hinomaru"
+            position="0 -0.6 0"
+            align="center"
+            color="white"
+            width="1.8"
+          ></a-text>
+        </a-entity>
+      </a-scene>
+    </div>
 
     <script>
       const sceneEl = document.querySelector("a-scene");
@@ -172,7 +195,6 @@
         loadingEl.style.display = "block";
       });
     </script>
+
   </body>
 </html>
-
-
