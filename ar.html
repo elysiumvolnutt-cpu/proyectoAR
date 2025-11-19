@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AR - Futbolito (prueba simple)</title>
+    <title>AR - Futbolito</title>
 
     <!-- Librerías AR -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
@@ -90,28 +90,31 @@
 
     <!-- Usamos el .mind de ejemplo oficial -->
     <a-scene
-      mindar-image="imageTargetSrc: ./targets.mind; autoStart: false"
+      mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: false"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights: true"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
+      <!-- Aquí precargamos TU modelo -->
+      <a-assets timeout="20000">
+        <a-asset-item id="japanModel" src="./models/torii.glb"></a-asset-item>
+      </a-assets>
+
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Un cubito simple sobre el targetIndex 0 -->
+      <!-- Target 0: mostramos tu torii -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-box
+        <a-entity
+          gltf-model="#japanModel"
           position="0 0 0"
-          depth="0.3"
-          height="0.3"
-          width="0.3"
-          color="#4ade80"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 4000; easing: linear"
-        ></a-box>
+          scale="0.2 0.2 0.2"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
+        ></a-entity>
 
         <a-text
-          value="Prueba AR"
-          position="0 -0.5 0"
+          value="Japón — Hinomaru"
+          position="0 -0.6 0"
           align="center"
           color="white"
           width="1.8"
@@ -158,4 +161,3 @@
     </script>
   </body>
 </html>
-
